@@ -1,0 +1,65 @@
+name: Build Release APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: wrapper
+
+      - name: Generate Release Keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore release.keystore \
+            -alias photos_key \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass photos1234 \
+            -keypass photos1234 \
+            -dname "CN=Photos, OU=Personal, O=Dispicapaul, L=Davao, S=Davao, C=PH"
+
+      - name: Build Unsigned Release APK
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+            ./gradlew assembleRelease
+          else
+            gradle assembleRelease
+          fi
+
+      - name: Align and Sign Release APK
+        run: |
+          BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
+          UNSIGNED_APK=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          $BUILD_TOOLS/zipalign -v -p 4 "$UNSIGNED_APK" app-release-aligned.apk
+          $BUILD_TOOLS/apksigner sign \
+            --ks release.keystore \
+            --ks-key-alias photos_key \
+            --ks-pass pass:photos1234 \
+            --key-pass pass:photos1234 \
+            --out Photos-Release.apk \
+            app-release-aligned.apk
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Photos-Release-APK
+          path: Photos-Release.apk
