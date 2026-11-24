@@ -1,0 +1,6 @@
+{
+  "name": "Photos",
+  "description": "Production-grade gallery experience and Kotlin/Jetpack Compose Android 16 (HyperOS 3) architecture tailored for Xiaomi 15 Ultra with 3-mode Theme Engine, Leica EXIF viewer, USB-OTG NVMe drive support, and Mirror/Rotate/Crop editor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Photos</string>
+    <string name="tab_library">Library</string>
+    <string name="tab_albums">Albums</string>
+    <string name="tab_drives">Drives</string>
+    <string name="action_select">Select</string>
+    <string name="action_done">Done</string>
+    <string name="action_edit">Edit</string>
+    <string name="editor_save_copy">Save Copy</string>
+    <string name="editor_overwrite">Overwrite Original</string>
+</resources>
