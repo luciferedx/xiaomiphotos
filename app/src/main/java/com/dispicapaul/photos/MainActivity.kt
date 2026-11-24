@@ -1,6 +1,5 @@
 package com.dispicapaul.photos
 
-import kotlinx.collections.immutable.toPersistentList
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
@@ -46,6 +45,7 @@ import com.dispicapaul.photos.ui.theme.PhotosTheme
 import com.dispicapaul.photos.ui.theme.PhotosThemeMode
 import com.dispicapaul.photos.ui.viewer.MediaViewerScreen
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -97,16 +97,16 @@ class MainActivity : ComponentActivity() {
             suspend fun refreshCurrentFeed() {
                 val drive = activeDrive
                 items = if (drive != null) {
-                    usbStorageManager.indexExternalDrive(drive)
+                    usbStorageManager.indexExternalDrive(drive).toPersistentList()
                 } else {
                     repository.loadInternalLibrary(
                         whitelistedPrefixes = includedFolders,
                         searchQuery = searchQuery,
                         filterKind = activeFilterKind,
                         favoritesOnly = favoritesOnly
-                    )
+                    ).toPersistentList()
                 }
-                folderRules = repository.discoverLocalFolders(includedFolders)
+                folderRules = repository.discoverLocalFolders(includedFolders).toPersistentList()
             }
 
             fun shareAssets(targets: List<MediaAsset>) {
